@@ -1,5 +1,5 @@
 {
-  "name": "passwordgenerator",
+  "name": "password_generator_granddizzy",
   "version": "1.0.0",
   "description": "password generator",
   "main": "index.js",
@@ -8,5 +8,8 @@
   },
   "author": "Roman Lepihov",
   "license": "ISC",
-  "keywords": []
+  "keywords": [
+    "password",
+    "generator"
+  ]
 }
