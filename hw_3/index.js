@@ -8,7 +8,7 @@ let viewCounts = {};
 try {
   viewCounts = JSON.parse(fs.readFileSync(path.join(__dirname, viewCountsFileName), 'utf-8'));
 } catch (e) {
-
+  console.log(e.message)
 }
 
 app.get('/', (req, res) => {
@@ -44,5 +44,9 @@ function addViewCount(viewCounts, url) {
     viewCounts[url] = 1;
   }
 
-  fs.writeFileSync(path.join(__dirname, viewCountsFileName), JSON.stringify(viewCounts, null, 2));
+  try {
+    fs.writeFileSync(path.join(__dirname, viewCountsFileName), JSON.stringify(viewCounts, null, 2));
+  } catch (e) {
+    console.log(e.message)
+  }
 }
