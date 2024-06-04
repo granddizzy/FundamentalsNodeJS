@@ -9,6 +9,8 @@
   "author": "Lepihov Roman",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "joi": "^17.13.1",
+    "joy": "^0.1.1"
   }
 }
