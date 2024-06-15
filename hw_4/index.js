@@ -53,7 +53,7 @@ app.post('/users', (req, res) => {
 app.put('/user/:id', (req, res) => {
   const result = usersSchema.validate(req.body)
   if (result.error) {
-    return res.status(404).send({error: result.error.details, status: 'error'})
+    return res.status(400).send({error: result.error.details, status: 'error'})
   }
 
   const users = JSON.parse(fs.readFileSync(path.join(__dirname, usersFile), 'utf-8'));
