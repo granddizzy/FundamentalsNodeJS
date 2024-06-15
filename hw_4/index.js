@@ -3,17 +3,17 @@ const app = express();
 const fs = require('fs');
 const path = require('path');
 const e = require("express");
-const joy = require("joy")
+const joi = require("joi")
 const port = 3000;
-const usersFile = '/db/users.json'
+const usersFile = 'db/users.json'
 
 app.use(express.json())
 
-const usersSchema = joy.object({
-  name: joy.string().min(1).required(),
-  surname: joy.string().min(1).required(),
-  age: joy.number().min(0).required(),
-  city: joy.string(),
+const usersSchema = joi.object({
+  name: joi.string().min(1).required(),
+  surname: joi.string().min(1).required(),
+  age: joi.number().min(0).required(),
+  city: joi.string(),
 })
 
 app.get('/users', (req, res) => {
@@ -23,9 +23,7 @@ app.get('/users', (req, res) => {
 
 app.get('/user/:id', (req, res) => {
   const users = JSON.parse(fs.readFileSync(path.join(__dirname, usersFile), 'utf-8'));
-  const user = users.find((item) => {
-    item.id === +req.params.id
-  })
+  const user = users.find(item => item.id === +req.params.id)
   if (user) {
     res.send({user});
   } else {
@@ -36,19 +34,20 @@ app.get('/user/:id', (req, res) => {
 app.post('/users', (req, res) => {
   const result = usersSchema.validate(req.body)
   if (result.error) {
-    return res.status(404).send({error: result.error.details, status: 'error'})
+    return res.status(400).send({error: result.error.details, status: 'error'})
   }
 
   const users = JSON.parse(fs.readFileSync(path.join(__dirname, usersFile), 'utf-8'));
-  const user = {
+  const newUser = {
+    id: users.length ? users[users.length - 1].id + 1 : 1,
     name: req.body.name,
     surname: req.body.surname,
     age: req.body.age,
     city: req.body.city,
   }
-  users.push(user);
+  users.push(newUser);
   fs.writeFileSync(path.join(__dirname, usersFile), JSON.stringify(users, null, 2));
-  res.send({user});
+  res.send({user: newUser});
 });
 
 app.put('/user/:id', (req, res) => {
@@ -58,9 +57,7 @@ app.put('/user/:id', (req, res) => {
   }
 
   const users = JSON.parse(fs.readFileSync(path.join(__dirname, usersFile), 'utf-8'));
-  const user = users.find((item) => {
-    item.id === +req.params.id
-  })
+  const user = users.find(item => item.id === +req.params.id)
   if (user) {
     user.name = req.body.name;
     user.surname = req.body.surname;
@@ -75,11 +72,9 @@ app.put('/user/:id', (req, res) => {
 
 app.delete('/user/:id', (req, res) => {
   const users = JSON.parse(fs.readFileSync(path.join(__dirname, usersFile), 'utf-8'));
-  const userIndex = users.findIndex((item) => {
-    item.id === +req.params.id
-  })
+  const userIndex = users.findIndex(item => item.id === +req.params.id)
   if (userIndex > -1) {
-    users.slice(userIndex, 1);
+    users.splice(userIndex, 1);
     fs.writeFileSync(path.join(__dirname, usersFile), JSON.stringify(users, null, 2));
     res.send({status: 'ok'});
   } else {
